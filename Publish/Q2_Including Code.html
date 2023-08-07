@@ -1,0 +1,377 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Q2</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-11-20"><meta name="DC.source" content="Q2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Initializations</a></li><li><a href="#3">Triangle Response</a></li><li><a href="#4">Square Response</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear; clc
+</pre><h2 id="2">Initializations</h2><pre class="codeinput">Pr = [0, 4, 18] ; <span class="comment">% dBm</span>
+Pr_new = 10 .^ ( (Pr - 30 ) ./ 10 ) ; <span class="comment">% Convert dBm to watt</span>
+h = 6.62607015e-34 ;
+e = 1.602176634e-19 ;
+Ts = 1e-19 ;
+fs = 1 / Ts ;
+t = 0 : Ts : 1e-14 ;
+T = t(end) ;
+c = 3e8 ;
+etha = 0.9 ;
+landa = 1550e-9 ;
+f = c / landa ; <span class="comment">% Hz</span>
+Phi = Pr_new / ( h * f ) ;
+</pre><h2 id="3">Triangle Response</h2><pre class="codeinput">delta_t = T / 100 ;
+arz_az_mabda = 2 * e / delta_t  ;
+
+output = zeros(1 , length(t)) ;
+figure(WindowState=<span class="string">"maximized"</span>) ;
+figure(WindowState=<span class="string">"maximized"</span>) ;
+fprintf(<span class="string">"*****************************************************"</span> + <span class="keyword">...</span>
+    <span class="string">"***************************\n"</span>)
+fprintf(<span class="string">"Triangle Response : \n"</span>);
+
+<span class="keyword">for</span> i = 1 : 3
+    lambda = etha * T * Phi(i) ;
+    mu = T / lambda ;
+    num_of_received_photons = poissrnd(lambda) ;
+
+    start = 0 ;
+    <span class="keyword">for</span> num = 1 : num_of_received_photons
+        output = output + DrawTriangle(Ts, start, arz_az_mabda, delta_t , T) ;
+        start = start + exprnd(mu) ;
+    <span class="keyword">end</span>
+    figure(1) ;
+    subplot(3, 1, i) ;
+    plot(t, output, LineWidth=1.2, Color=<span class="string">"#0072BD"</span>) ;
+    grid <span class="string">minor</span> ;
+    title([<span class="string">'Pr = '</span>, num2str(Pr(i)), <span class="string">' dBm'</span>]);
+    xlabel(<span class="string">"Time (s)"</span>) ;
+    ylabel(<span class="string">"Current (A)"</span>);
+    yline(mean(output), LineWidth=1.2 , Color=<span class="string">"#D95319"</span>);
+
+    fprintf(<span class="string">"( Practical ) :\t\t Pr = %2d -&gt; Mean = %e &amp; Var = %e \n"</span>, Pr(i), <span class="keyword">...</span>
+        mean(output), var(output));
+
+    fprintf(<span class="string">"( Theoretical ) :\t Pr = %2d -&gt; Mean = %e &amp; Var = %e \n"</span>, Pr(i), <span class="keyword">...</span>
+       e*etha*Phi(i), (e^2)*etha*Phi(i)/T);
+
+    <span class="comment">% Calculate PSD</span>
+    figure(2) ;
+    [pxx , w] = pwelch(output, length(output), length(output)/5, 1024, fs, <span class="keyword">...</span>
+        <span class="string">'centered'</span>, <span class="string">'power'</span>);
+    pxx = 10*log10(pxx);
+    subplot(3, 1, i) ;
+    plot(w, pxx, LineWidth=1.2, Color=<span class="string">"#0072BD"</span>);
+    grid <span class="string">minor</span> ;
+    title([<span class="string">'Pwelch, Pr = '</span>, num2str(Pr(i)), <span class="string">' dBm'</span>]);
+    xlabel(<span class="string">'Frequency (HZ)'</span>);
+    ylabel(<span class="string">'Power (dB)'</span>);
+    yline(max(pxx),Label=[<span class="string">'Max = '</span>, num2str(max(pxx)), <span class="string">' &amp; Theoritical = '</span>, <span class="keyword">...</span>
+        num2str( 10*log10((e*etha*Phi(i)) ^2) )], LineWidth=1.2 , <span class="keyword">...</span>
+        Color=<span class="string">"#D95319"</span> , LabelVerticalAlignment=<span class="string">"bottom"</span> , <span class="keyword">...</span>
+        LabelHorizontalAlignment=<span class="string">"left"</span>);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">********************************************************************************
+Triangle Response : 
+( Practical ) :		 Pr =  0 -&gt; Mean = 8.347971e-04 &amp; Var = 1.839756e-06 
+( Theoretical ) :	 Pr =  0 -&gt; Mean = 1.124365e-03 &amp; Var = 1.801431e-08 
+( Practical ) :		 Pr =  4 -&gt; Mean = 3.403411e-03 &amp; Var = 6.996382e-06 
+( Theoretical ) :	 Pr =  4 -&gt; Mean = 2.824277e-03 &amp; Var = 4.524991e-08 
+( Practical ) :		 Pr = 18 -&gt; Mean = 7.336660e-02 &amp; Var = 3.270545e-04 
+( Theoretical ) :	 Pr = 18 -&gt; Mean = 7.094264e-02 &amp; Var = 1.136626e-06 
+</pre><img vspace="5" hspace="5" src="Q2_01.png" alt=""> <img vspace="5" hspace="5" src="Q2_02.png" alt=""> <h2 id="4">Square Response</h2><pre class="codeinput">delta_t = T / 100 ;
+output = zeros(1 , length(t)) ;
+figure(WindowState=<span class="string">"maximized"</span>);
+figure(WindowState=<span class="string">"maximized"</span>) ;
+
+fprintf(<span class="string">"*****************************************************"</span> + <span class="keyword">...</span>
+    <span class="string">"***************************\n"</span>);
+fprintf(<span class="string">"Square Response : \n"</span>);
+
+<span class="keyword">for</span> i = 1 : 3
+    lambda = etha * T * Phi(i) ;
+    mu = T / lambda ;
+    num_of_received_photons = poissrnd(lambda) ;
+
+    start = 0 ;
+    <span class="keyword">for</span> num = 1 : num_of_received_photons
+        output = output + DrawSquare(Ts, start, delta_t, T) ;
+        start = start + exprnd(mu) ;
+    <span class="keyword">end</span>
+    figure(3);
+    subplot(3, 1, i) ;
+    plot(t, output, LineWidth=1.2, Color=<span class="string">"#0072BD"</span>) ;
+    grid <span class="string">minor</span> ;
+    title([<span class="string">'Pr = '</span>, num2str(Pr(i)), <span class="string">' dBm'</span>]) ;
+    xlabel(<span class="string">"Time (s)"</span>) ;
+    ylabel(<span class="string">"Current (A)"</span>);
+    yline(mean(output), LineWidth=1.2 , Color=<span class="string">"#D95319"</span>);
+
+    fprintf(<span class="string">"( Practical ) :\t\t Pr = %2d -&gt; Mean = %e &amp; Var = %e \n"</span>, Pr(i), <span class="keyword">...</span>
+        mean(output), var(output));
+
+    fprintf(<span class="string">"( Theoretical ) :\t Pr = %2d -&gt; Mean = %e &amp; Var = %e \n"</span>, Pr(i), <span class="keyword">...</span>
+       e*etha*Phi(i), (e^2)*etha*Phi(i)/T);
+
+    <span class="comment">% Calculate PSD</span>
+    figure(4) ;
+    [pxx , w] = pwelch(output, length(output), length(output)/5, 1024, <span class="keyword">...</span>
+        fs, <span class="string">'centered'</span>, <span class="string">'power'</span>);
+    pxx = 10*log10(pxx);
+    subplot(3, 1, i) ;
+    plot(w, pxx, LineWidth=1.2, Color=<span class="string">"#0072BD"</span>);
+    grid <span class="string">minor</span> ;
+    title([<span class="string">'Pwelch, Pr = '</span>, num2str(Pr(i)), <span class="string">' dBm'</span>]);
+    xlabel(<span class="string">'Frequency (HZ)'</span>);
+    ylabel(<span class="string">'Power (dB)'</span>);
+    yline(max(pxx),Label=[<span class="string">'Max = '</span>, num2str(max(pxx)), <span class="string">' &amp; Theoritical = '</span>, <span class="keyword">...</span>
+        num2str( 10*log10((e*etha*Phi(i)) ^2) )], LineWidth=1.2 , <span class="keyword">...</span>
+        Color=<span class="string">"#D95319"</span> , LabelVerticalAlignment=<span class="string">"bottom"</span> , <span class="keyword">...</span>
+        LabelHorizontalAlignment=<span class="string">"left"</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% Functions</span>
+<span class="keyword">function</span> y = DrawTriangle(Ts , start_point, arz_az_mabda, delta_t , t_end)
+t = 0 : Ts : t_end ;
+gradient = arz_az_mabda / delta_t ;
+
+y = -gradient * (t-start_point) + arz_az_mabda ;
+
+<span class="keyword">for</span> i = 1 : length(t)
+    <span class="keyword">if</span> ( i &lt;= start_point/Ts ) || ( i &gt;= (start_point + delta_t)/Ts + 1 )
+        y(i) = 0 ;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> y = DrawSquare(Ts, start_point, delta_t, t_end)
+e = 1.602176634e-19 ;
+t = 0 : Ts : t_end ;
+y =  (e/delta_t) .* ones(1 , length(t)) ;
+
+<span class="keyword">for</span> i = 1 : length(t)
+    <span class="keyword">if</span> ( i &lt;= start_point/Ts ) || ( i &gt;= (start_point + delta_t)/Ts + 1 )
+        y(i) = 0 ;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">********************************************************************************
+Square Response : 
+( Practical ) :		 Pr =  0 -&gt; Mean = 1.170731e-03 &amp; Var = 1.970030e-06 
+( Theoretical ) :	 Pr =  0 -&gt; Mean = 1.124365e-03 &amp; Var = 1.801431e-08 
+( Practical ) :		 Pr =  4 -&gt; Mean = 3.945224e-03 &amp; Var = 7.515138e-06 
+( Theoretical ) :	 Pr =  4 -&gt; Mean = 2.824277e-03 &amp; Var = 4.524991e-08 
+( Practical ) :		 Pr = 18 -&gt; Mean = 7.263187e-02 &amp; Var = 1.246538e-04 
+( Theoretical ) :	 Pr = 18 -&gt; Mean = 7.094264e-02 &amp; Var = 1.136626e-06 
+</pre><img vspace="5" hspace="5" src="Q2_03.png" alt=""> <img vspace="5" hspace="5" src="Q2_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all; clear; clc
+
+%% Initializations
+Pr = [0, 4, 18] ; % dBm
+Pr_new = 10 .^ ( (Pr - 30 ) ./ 10 ) ; % Convert dBm to watt
+h = 6.62607015e-34 ;
+e = 1.602176634e-19 ;
+Ts = 1e-19 ;
+fs = 1 / Ts ;
+t = 0 : Ts : 1e-14 ;
+T = t(end) ;
+c = 3e8 ;
+etha = 0.9 ;
+landa = 1550e-9 ;
+f = c / landa ; % Hz
+Phi = Pr_new / ( h * f ) ;
+
+%% Triangle Response 
+delta_t = T / 100 ;
+arz_az_mabda = 2 * e / delta_t  ;
+
+output = zeros(1 , length(t)) ;
+figure(WindowState="maximized") ;
+figure(WindowState="maximized") ;
+fprintf("*****************************************************" + ...
+    "***************************\n")
+fprintf("Triangle Response : \n");
+
+for i = 1 : 3
+    lambda = etha * T * Phi(i) ;
+    mu = T / lambda ;
+    num_of_received_photons = poissrnd(lambda) ;
+
+    start = 0 ;
+    for num = 1 : num_of_received_photons
+        output = output + DrawTriangle(Ts, start, arz_az_mabda, delta_t , T) ;
+        start = start + exprnd(mu) ;
+    end
+    figure(1) ;
+    subplot(3, 1, i) ;
+    plot(t, output, LineWidth=1.2, Color="#0072BD") ;
+    grid minor ;
+    title(['Pr = ', num2str(Pr(i)), ' dBm']);
+    xlabel("Time (s)") ;
+    ylabel("Current (A)");
+    yline(mean(output), LineWidth=1.2 , Color="#D95319");
+
+    fprintf("( Practical ) :\t\t Pr = %2d -> Mean = %e & Var = %e \n", Pr(i), ...
+        mean(output), var(output));
+    
+    fprintf("( Theoretical ) :\t Pr = %2d -> Mean = %e & Var = %e \n", Pr(i), ...
+       e*etha*Phi(i), (e^2)*etha*Phi(i)/T);
+    
+    % Calculate PSD
+    figure(2) ;
+    [pxx , w] = pwelch(output, length(output), length(output)/5, 1024, fs, ...
+        'centered', 'power');
+    pxx = 10*log10(pxx);
+    subplot(3, 1, i) ;
+    plot(w, pxx, LineWidth=1.2, Color="#0072BD");
+    grid minor ;
+    title(['Pwelch, Pr = ', num2str(Pr(i)), ' dBm']);
+    xlabel('Frequency (HZ)');
+    ylabel('Power (dB)');
+    yline(max(pxx),Label=['Max = ', num2str(max(pxx)), ' & Theoritical = ', ...
+        num2str( 10*log10((e*etha*Phi(i)) ^2) )], LineWidth=1.2 , ...
+        Color="#D95319" , LabelVerticalAlignment="bottom" , ...
+        LabelHorizontalAlignment="left");
+end
+
+%% Square Response
+delta_t = T / 100 ;
+output = zeros(1 , length(t)) ;
+figure(WindowState="maximized");
+figure(WindowState="maximized") ;
+
+fprintf("*****************************************************" + ...
+    "***************************\n");
+fprintf("Square Response : \n");
+
+for i = 1 : 3
+    lambda = etha * T * Phi(i) ;
+    mu = T / lambda ;
+    num_of_received_photons = poissrnd(lambda) ;
+
+    start = 0 ;
+    for num = 1 : num_of_received_photons
+        output = output + DrawSquare(Ts, start, delta_t, T) ;
+        start = start + exprnd(mu) ;
+    end
+    figure(3);
+    subplot(3, 1, i) ;
+    plot(t, output, LineWidth=1.2, Color="#0072BD") ;
+    grid minor ;
+    title(['Pr = ', num2str(Pr(i)), ' dBm']) ;
+    xlabel("Time (s)") ;
+    ylabel("Current (A)");
+    yline(mean(output), LineWidth=1.2 , Color="#D95319");
+
+    fprintf("( Practical ) :\t\t Pr = %2d -> Mean = %e & Var = %e \n", Pr(i), ...
+        mean(output), var(output));
+
+    fprintf("( Theoretical ) :\t Pr = %2d -> Mean = %e & Var = %e \n", Pr(i), ...
+       e*etha*Phi(i), (e^2)*etha*Phi(i)/T);
+    
+    % Calculate PSD
+    figure(4) ;
+    [pxx , w] = pwelch(output, length(output), length(output)/5, 1024, ...
+        fs, 'centered', 'power');
+    pxx = 10*log10(pxx);
+    subplot(3, 1, i) ;
+    plot(w, pxx, LineWidth=1.2, Color="#0072BD");
+    grid minor ;
+    title(['Pwelch, Pr = ', num2str(Pr(i)), ' dBm']);
+    xlabel('Frequency (HZ)');
+    ylabel('Power (dB)');
+    yline(max(pxx),Label=['Max = ', num2str(max(pxx)), ' & Theoritical = ', ...
+        num2str( 10*log10((e*etha*Phi(i)) ^2) )], LineWidth=1.2 , ...
+        Color="#D95319" , LabelVerticalAlignment="bottom" , ...
+        LabelHorizontalAlignment="left");
+end
+
+% Functions
+function y = DrawTriangle(Ts , start_point, arz_az_mabda, delta_t , t_end)
+t = 0 : Ts : t_end ;
+gradient = arz_az_mabda / delta_t ;
+
+y = -gradient * (t-start_point) + arz_az_mabda ;
+
+for i = 1 : length(t)
+    if ( i <= start_point/Ts ) || ( i >= (start_point + delta_t)/Ts + 1 )
+        y(i) = 0 ;
+    end
+end
+end
+
+function y = DrawSquare(Ts, start_point, delta_t, t_end)
+e = 1.602176634e-19 ;
+t = 0 : Ts : t_end ;
+y =  (e/delta_t) .* ones(1 , length(t)) ;
+
+for i = 1 : length(t)
+    if ( i <= start_point/Ts ) || ( i >= (start_point + delta_t)/Ts + 1 )
+        y(i) = 0 ;
+    end
+end
+end
+##### SOURCE END #####
+--></body></html>
